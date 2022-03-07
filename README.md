@@ -4,4 +4,4 @@
  - the words will be inserted to a string 
  - the result will be a random and funny sentances
 
- 
+ [Pr Link](https://github.com/moayadabukhadra/madlib-cli/pull/1)
