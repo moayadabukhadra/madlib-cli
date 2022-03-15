@@ -1,35 +1,36 @@
-
-from importlib.resources import path
 import re
-def welcoming_msg():
-    print("""
-    ***************************************************************
-                        Welcome to madlibs!!
-            To play, enter the file name of a madlibs file.
-        You\'ll then be prompted for words. When done, you\'ll receive
-                        your completed madlibs
-                to quit from the game write "quit"
-    ***************************************************************
-    """)
-welcoming_msg()
-
 
 
 def read_template(path):
+    """
+    This function takes a path for txt file and returns a string of the content inside the file 
+    """
     try:
-        f= open(path)
+        file = open(path, 'r')
+        content = file.read()
+        return content
     except FileNotFoundError:
-        print("enter a vaild file name")
-    else:
-        txt = f.read()
-        f.close()
-    finally:
-        return txt
+        raise FileNotFoundError('please enter a vaild file path')
 
-txt = read_template("assets/file.txt")
+
+def welcome_messege():
+    """
+    this function shows a welcome massege 
+    """
+    print("""
+    *********************************************
+    Welcometo the malib game 
+    you will be asked to inter some random words 
+    finally you will see the result
+    *********************************************
+    """)
+
 
 def parse_template(txt):
-     
+    """
+    This function takes a template(string) and extract all the
+    phrases within any curly brackets {}
+    """
     parts_list = re.findall(r'\{.*?\}',txt)
     stripped = re.sub(r'\{.*?\}', '{}', txt)
     i=0
@@ -40,32 +41,33 @@ def parse_template(txt):
     parts_tuple=tuple(parts_list)
     return stripped ,parts_tuple
 
-stripped=parse_template(txt)[0]
-parts_tuple=parse_template(txt)[1]
 
-def merge(stripped,parts_tuple):
-        parts=[]
-        parts_list=list(parts_tuple)
-        for element in parts_list:
-            element = element.strip('{}')
-            user_input=input("enter a word >  ")
-            if user_input=="quit":
-                exit()
-            else:
-                parts.append(user_input)
-        parts_tuple=tuple(parts)
-        output=stripped.format(*parts_tuple)
-        print(f' your madlib result:    {output}')
-        f=open("assets/result.txt","w")
-        content=f.write(output)
-        return output
+def merge(stripped, parts_tuple):
+    """
+    this function merges the user input with the text file in order 
+    """
+    txt = open('assets/result.txt', 'w')
+    txt.write(stripped.format(*parts_tuple))
 
-merge(stripped,parts_tuple)       
-        
+    return stripped.format(*parts_tuple)
 
 
-    
-    
-    
-    
+def play():
+    """this function to start the game in the terminal"""
+    welcome_messege()
+    template = read_template('./assets/file.txt')
+    stripped, parts_tuple = parse_template(template)
+    inputs = [input(f"\nwrite a/an {i}: ") for i in parts_tuple]
+    txt= open("assets/result.txt","r")
+    result= txt.read()
+    print(result)
+
+    return merge(stripped, inputs)
+
+
+if __name__ == "__main__":
+    play()
+
+
+
 
